@@ -8,6 +8,10 @@ namespace Player
 {
     public class Songs
     {
+        public int Duration;
+        public string Name;
+        public Artist Artist;
+        public Album Album;
 
     }
 }

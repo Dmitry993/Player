@@ -8,6 +8,26 @@ namespace Player
 {
     public class Artist
     {
-        
+        public string Genre;
+        public string Name;
+
+        public Artist()
+        {
+            this.Name = "Default artist";
+            this.Genre = "Default genre";
+        }
+
+        public Artist(string name)
+        {
+            this.Name = name;
+            this.Genre = "Default genre";
+        }
+
+        public Artist(string name, string genre)
+        {
+            this.Name = name;
+            this.Genre = genre;
+        }
+
     }
 }
