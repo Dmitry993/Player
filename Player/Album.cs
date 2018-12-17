@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace Player
 {
-    class Program
+    public class Album
     {
-        static void Main(string[] args)
-        {
-
-        }
+       
     }
 }
