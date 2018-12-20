@@ -12,6 +12,8 @@ namespace Player
         private const int MAX_VOLUME = 100;
 
         private int volume;
+        private bool locked;
+        private bool playing;
 
         public int Volume
         {
@@ -41,26 +43,48 @@ namespace Player
         public void VolumeUp()
         {
             Volume++;
+            Console.WriteLine("Sound up");
         }
 
         public void VolumeDown()
         {
             Volume--;
+            Console.WriteLine("Sound down");
         }
 
         public void VolumeChange(int step)
         {
             Volume += step;
+            Console.WriteLine($"sound changed to {volume}");
         }
 
         public void Play()
         {
-            Console.WriteLine($"Player is playing: {Song[0].Name}");
+            if (!locked)
+            {
+                playing = true;
+                Console.WriteLine($"Player is playing: {Song[0].Name}");
+            }
         }
 
         public void Stop()
         {
-            Console.WriteLine($"Player is stopped");
+            if (!locked)
+            {
+                playing = false;
+                Console.WriteLine("Player is stopped");
+            }
+        }
+
+        public void Lock()
+        {
+            locked = true;
+            Console.WriteLine("Player locked");
+        }
+        public void Unlock()
+        {
+            locked = false;
+            Console.WriteLine("Player unlocked");
         }
 
     }
