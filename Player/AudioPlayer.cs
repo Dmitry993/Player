@@ -38,42 +38,49 @@ namespace Player
 
         }
 
-        public Songs[] Song;
+        public List<Songs> Songs = new List<Songs>();
 
         public void VolumeUp()
         {
+            if (locked) return;
             Volume++;
             Console.WriteLine("Sound up");
         }
 
         public void VolumeDown()
         {
+            if (locked) return;
             Volume--;
             Console.WriteLine("Sound down");
         }
 
         public void VolumeChange(int step)
         {
+            if (locked) return;
             Volume += step;
             Console.WriteLine($"sound changed to {volume}");
         }
 
-        public void Play()
+        public void Play(bool loop = false)
         {
-            if (!locked)
+            if (locked) return;
+            int count = 1;
+            if (loop) count = Songs.Count;
+            playing = true;
+            for (int i = 0; i < count; i++)
             {
-                playing = true;
-                Console.WriteLine($"Player is playing: {Song[0].Name}");
+                Console.WriteLine($"Player is playing: {Songs[i].Name}, duration: {Songs[i].Duration}");
+                System.Threading.Thread.Sleep(1000);
             }
+
         }
 
         public void Stop()
         {
-            if (!locked)
-            {
-                playing = false;
-                Console.WriteLine("Player is stopped");
-            }
+            if (locked) return;
+            playing = false;
+            Console.WriteLine("Player is stopped");
+
         }
 
         public void Lock()
@@ -87,5 +94,29 @@ namespace Player
             Console.WriteLine("Player unlocked");
         }
 
+        public void Add(List<Songs> songsArray)
+        {
+            Songs.AddRange(songsArray);
+        }
+
+        public void Shuffle()
+        {
+            Random random = new Random();
+            for (int i = Songs.Count - 1; i >= 1; i--)
+            {
+                int j = random.Next(i + 1);
+                var temp = Songs[j];
+                Songs[j] = Songs[i];
+                Songs[i] = temp;
+            }
+        }
+        public void SortByTitle()
+        {
+            var sort = from sortSongs in Songs
+                         orderby sortSongs.Name, sortSongs.Duration, sortSongs.Name.Length
+                         select sortSongs;
+            foreach (Songs s in sort)
+                Songs = new List<Songs> (sort);
+        }
     }
 }
