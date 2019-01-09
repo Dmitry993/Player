@@ -27,10 +27,17 @@ namespace Player
             audioPlayer.Unlock();
             audioPlayer.Stop();
 
-            var songs = new List<Songs>();
-            songs.Add(CreatSong());
-            songs.Add(CreatSong("Hey you"));
-            songs.Add(CreatSong(270, "Let It Be"));
+            var songs = new List<Song>();
+            var song1 = CreatSong();
+            song1.Like();
+            songs.Add(song1);
+            var song2 = CreatSong("Hey you");
+            song2.Dislike();
+            songs.Add(song2);
+            var song3 = CreatSong(270, "Let It Be");
+            song3.Dislike();
+            songs.Add(song3);
+
             audioPlayer.Add(songs);
 
             audioPlayer.Shuffle();
@@ -38,7 +45,7 @@ namespace Player
 
             for (int i = 0; i < audioPlayer.Songs.Count; i++)
             {
-                Console.WriteLine(audioPlayer.Songs[i].Name);
+                Console.WriteLine(audioPlayer.Songs[i].GetName());
             }
 
             audioPlayer.Play(true);
@@ -48,9 +55,8 @@ namespace Player
 
         public static Artist AddArtist(string name = "Unknown artist")
         {
-            var artist = new Artist();
-            artist.Name = name;
-            artist.Genre = "Unknown genre";
+            var artist = new Artist(name);
+
             return artist;
         }
 
@@ -59,10 +65,11 @@ namespace Player
             var album = new Album();
             album.Name = name;
             album.Year = 2018;
+
             return album;
         }
 
-        public static List<Songs> GetSongsData(ref int totalDuration, out int minDuration, out int maxDuration)
+        public static List<Song> GetSongsData(ref int totalDuration, out int minDuration, out int maxDuration)
         {
             minDuration = 0;
             maxDuration = 1000;
@@ -71,51 +78,48 @@ namespace Player
             album.Name = "Let It Be";
             album.Year = 1970;
 
-            var artist = new Artist();
-            artist.Name = "The Beatles";
-            artist.Genre = "Rock";
+            var artist = new Artist("The Beatles");
+            Console.WriteLine(artist.Genre);
 
-            var artist2 = new Artist("Metallica");
+            var artist2 = new Artist(name: "Metallica");
             Console.WriteLine(artist2.Name);
             Console.WriteLine(artist2.Genre);
 
-            var artist3 = new Artist("Radiohead", "alternative");
+            var artist3 = new Artist("Radiohead", Genres.Rock | Genres.Classical);
             Console.WriteLine(artist3.Name);
             Console.WriteLine(artist3.Genre);
 
-            var songs = new List<Songs>(10);
+            var songs = new List<Song>(10);
             var random = new Random();
             for (int i = 0; i < 10; i++)
             {
-                songs.Add(new Songs()
+                songs.Add(new Song($"New song {i}", random.Next(1000), artist, album));
+
+                if (songs[i].Duration < minDuration)
                 {
-                    Duration = random.Next(1000),
-                    Name = $"New song {i}",
-                    Album = album,
-                    Artist = artist
-                });
-                if (songs[i].Duration < minDuration) minDuration = songs[i].Duration;
+                    minDuration = songs[i].Duration;
+                }
+
                 maxDuration = Math.Max(maxDuration, songs[i].Duration);
             }
 
             return songs;
         }
 
-        public static Songs CreatSong()
+        public static Song CreatSong()
         {
-
-            return new Songs() { Name = "Unknown", Duration = 80 };
+            return new Song("Unknown", 80);
         }
 
-        public static Songs CreatSong(string name)
+        public static Song CreatSong(string name)
         {
-            return new Songs() { Name = name, Duration = 120 };
+            return new Song(name, 120);
         }
 
-        public static Songs CreatSong(int duration, string name)
+        public static Song CreatSong(int duration, string name)
         {
 
-            return new Songs() { Name = name, Duration = duration };
+            return new Song(name, duration);
         }
 
         public static void TraceInfo(AudioPlayer audioPlayer)
@@ -124,7 +128,6 @@ namespace Player
             Console.WriteLine(audioPlayer.Songs[0].Duration);
             Console.WriteLine(audioPlayer.Songs.Count);
             Console.WriteLine(audioPlayer.Volume);
-
         }
     }
 }

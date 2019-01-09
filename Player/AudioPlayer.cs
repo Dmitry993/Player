@@ -8,93 +8,113 @@ namespace Player
 {
     public class AudioPlayer
     {
-        private const int MIN_VOLUME = 0;
-        private const int MAX_VOLUME = 100;
+        private const int MinVolume = 0;
+        private const int MaxVolume = 100;
 
-        private int volume;
-        private bool locked;
-        private bool playing;
+        private int _volume;
+        private bool _locked;
+        private bool _playing;
 
         public int Volume
         {
-            get { return volume; }
+            get { return _volume; }
             set
             {
-                if (value < MIN_VOLUME)
+                if (value < MinVolume)
                 {
-                    volume = MIN_VOLUME;
+                    _volume = MinVolume;
                 }
-                else if (value > MAX_VOLUME)
+                else if (value > MaxVolume)
                 {
-                    volume = MAX_VOLUME;
+                    _volume = MaxVolume;
                 }
                 else
                 {
-                    volume = value;
+                    _volume = value;
                 }
-
-
             }
-
         }
 
-        public List<Songs> Songs = new List<Songs>();
+        public List<Song> Songs = new List<Song>();
 
         public void VolumeUp()
         {
-            if (locked) return;
+            if (_locked)
+            {
+                return;
+            }
+
             Volume++;
             Console.WriteLine("Sound up");
         }
 
         public void VolumeDown()
         {
-            if (locked) return;
+            if (_locked)
+            {
+                return;
+            }
+
             Volume--;
             Console.WriteLine("Sound down");
         }
 
         public void VolumeChange(int step)
         {
-            if (locked) return;
+            if (_locked)
+            {
+                return;
+            }
+
             Volume += step;
-            Console.WriteLine($"sound changed to {volume}");
+            Console.WriteLine($"sound changed to {_volume}");
         }
 
         public void Play(bool loop = false)
         {
-            if (locked) return;
-            int count = 1;
-            if (loop) count = Songs.Count;
-            playing = true;
-            for (int i = 0; i < count; i++)
+            if (_locked)
             {
-                Console.WriteLine($"Player is playing: {Songs[i].Name}, duration: {Songs[i].Duration}");
-                System.Threading.Thread.Sleep(1000);
+                return;
             }
 
+            int count = 1;
+            _playing = true;
+
+            if (loop)
+            {
+                count = Songs.Count;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                Console.WriteLine($"Player is playing: {Songs[i].GetName()}, duration: {Songs[i].Duration}");
+                System.Threading.Thread.Sleep(1000);
+            }
         }
 
         public void Stop()
         {
-            if (locked) return;
-            playing = false;
-            Console.WriteLine("Player is stopped");
+            if (_locked)
+            {
+                return;
+            }
 
+            _playing = false;
+            Console.WriteLine("Player is stopped");
         }
 
         public void Lock()
         {
-            locked = true;
+            _locked = true;
             Console.WriteLine("Player locked");
         }
         public void Unlock()
         {
-            locked = false;
+            _locked = false;
             Console.WriteLine("Player unlocked");
         }
 
-        public void Add(List<Songs> songsArray)
+        public void Add(List<Song> songsArray)
         {
             Songs.AddRange(songsArray);
         }
@@ -102,6 +122,7 @@ namespace Player
         public void Shuffle()
         {
             Random random = new Random();
+
             for (int i = Songs.Count - 1; i >= 1; i--)
             {
                 int j = random.Next(i + 1);
@@ -110,13 +131,14 @@ namespace Player
                 Songs[i] = temp;
             }
         }
+
         public void SortByTitle()
         {
-            var sort = from sortSongs in Songs
-                         orderby sortSongs.Name, sortSongs.Duration, sortSongs.Name.Length
-                         select sortSongs;
-            foreach (Songs s in sort)
-                Songs = new List<Songs> (sort);
+            var sortedSongs = from sortSongs in Songs
+                              orderby sortSongs.GetName()
+                              select sortSongs;
+
+            Songs = sortedSongs.ToList();
         }
     }
 }
