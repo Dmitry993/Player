@@ -2,11 +2,11 @@
 
 namespace Player
 {
-    public class Song
+    public class Song:IComparable
     {
         private string _name;
         private bool? _like;
-        
+
         public Song()
         {
             _name = "Default name";
@@ -26,6 +26,7 @@ namespace Player
             Album = album;
         }
 
+        public string SetName { set { _name = value; } }
         public int Duration { get; }
         public Artist Artist { get; }
         public Album Album { get; }
@@ -41,7 +42,7 @@ namespace Player
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 return _name;
-                
+
             }
 
             if (_like == false)
@@ -58,6 +59,11 @@ namespace Player
         public void Like()
         {
             _like = true;
+        }
+
+        public int CompareTo(object obj)
+        {
+            return this._name?.CompareTo((obj as Song)?._name) ?? 0;
         }
     }
 }

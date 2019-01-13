@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Player.Extensions;
 
 namespace Player
 {
@@ -35,7 +34,7 @@ namespace Player
             }
         }
 
-        public List<Song> Songs = new List<Song>();
+        public List<Song> Songs { get; private set; } = new List<Song>();
 
         public void VolumeUp()
         {
@@ -108,6 +107,7 @@ namespace Player
             _locked = true;
             Console.WriteLine("Player locked");
         }
+
         public void Unlock()
         {
             _locked = false;
@@ -121,24 +121,17 @@ namespace Player
 
         public void Shuffle()
         {
-            Random random = new Random();
-
-            for (int i = Songs.Count - 1; i >= 1; i--)
-            {
-                int j = random.Next(i + 1);
-                var temp = Songs[j];
-                Songs[j] = Songs[i];
-                Songs[i] = temp;
-            }
+            Songs.Shuffle();
         }
 
         public void SortByTitle()
         {
-            var sortedSongs = from sortSongs in Songs
-                              orderby sortSongs.GetName()
-                              select sortSongs;
+            Songs.Sort();
+        }
 
-            Songs = sortedSongs.ToList();
+        public void Substring()
+        {
+            Songs.Substring();
         }
     }
 }

@@ -42,6 +42,7 @@ namespace Player
 
             audioPlayer.Shuffle();
             audioPlayer.SortByTitle();
+            audioPlayer.Substring();
 
             for (int i = 0; i < audioPlayer.Songs.Count; i++)
             {
@@ -108,7 +109,7 @@ namespace Player
 
         public static Song CreatSong()
         {
-            return new Song("Unknown", 80);
+            return new Song("Unknown name", 80);
         }
 
         public static Song CreatSong(string name)
