@@ -2,7 +2,7 @@
 
 namespace Player
 {
-    public class Song:IComparable
+    public class Song : IComparable
     {
         private string _name;
         private bool? _like;
@@ -53,7 +53,6 @@ namespace Player
 
             Console.ResetColor();
             return _name;
-
         }
 
         public void Like()

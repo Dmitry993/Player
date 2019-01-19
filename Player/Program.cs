@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace Player
 {
@@ -13,8 +12,7 @@ namespace Player
             var audioPlayer = new AudioPlayer();
             int totalDuration = 0;
             int minDuration, maxDuration;
-            audioPlayer.Add(GetSongsData(ref totalDuration, out minDuration, out maxDuration));
-            Console.WriteLine($"Total {totalDuration}, min {minDuration}, max {maxDuration}");
+            //Console.WriteLine($"Total {totalDuration}, min {minDuration}, max {maxDuration}");
 
             //audioPlayer.Lock();
             //audioPlayer.Play();
@@ -31,18 +29,21 @@ namespace Player
             var song1 = CreatSong();
             song1.Like();
             songs.Add(song1);
-            var song2 = CreatSong("Hey you");
+            var song2 = CreatSong(160, "Hey you", AddArtist(Genres.Rock), AddAlbum());
             song2.Dislike();
             songs.Add(song2);
-            var song3 = CreatSong(270, "Let It Be");
+            var song3 = CreatSong(270, "Let It Be", AddArtist(Genres.Rock | Genres.Pop), AddAlbum());
             song3.Dislike();
             songs.Add(song3);
+            songs.AddRange(GetSongsData(ref totalDuration, out minDuration, out maxDuration));
 
             audioPlayer.Add(songs);
-
+            
             audioPlayer.Shuffle();
             audioPlayer.SortByTitle();
             audioPlayer.Substring();
+            audioPlayer.SetSongs(FilterByGenre(songs, Genres.Rock));
+            
 
             for (int i = 0; i < audioPlayer.Songs.Count; i++)
             {
@@ -54,9 +55,15 @@ namespace Player
             Console.ReadLine();
         }
 
-        public static Artist AddArtist(string name = "Unknown artist")
+        public static List<Song> FilterByGenre(List<Song> songs, Genres genre)
         {
-            var artist = new Artist(name);
+           var genreSongs = songs.Where(song => song.Artist.Genre.HasFlag(genre)).ToList();
+            return genreSongs;
+        }
+
+        public static Artist AddArtist(Genres genres, string name = "Unknown artist")
+        {
+            var artist = new Artist(name, genres);
 
             return artist;
         }
@@ -79,16 +86,8 @@ namespace Player
             album.Name = "Let It Be";
             album.Year = 1970;
 
-            var artist = new Artist("The Beatles");
+            var artist = new Artist("Unknown", Genres.Default);
             Console.WriteLine(artist.Genre);
-
-            var artist2 = new Artist(name: "Metallica");
-            Console.WriteLine(artist2.Name);
-            Console.WriteLine(artist2.Genre);
-
-            var artist3 = new Artist("Radiohead", Genres.Rock | Genres.Classical);
-            Console.WriteLine(artist3.Name);
-            Console.WriteLine(artist3.Genre);
 
             var songs = new List<Song>(10);
             var random = new Random();
@@ -109,7 +108,7 @@ namespace Player
 
         public static Song CreatSong()
         {
-            return new Song("Unknown name", 80);
+            return new Song("Unknown name", 80, AddArtist(Genres.Classical), AddAlbum());
         }
 
         public static Song CreatSong(string name)
@@ -117,10 +116,10 @@ namespace Player
             return new Song(name, 120);
         }
 
-        public static Song CreatSong(int duration, string name)
+        public static Song CreatSong(int duration, string name, Artist artist, Album album)
         {
 
-            return new Song(name, duration);
+            return new Song(name, duration, artist, album);
         }
 
         public static void TraceInfo(AudioPlayer audioPlayer)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Player.Extensions;
 
 namespace Player
@@ -86,7 +85,7 @@ namespace Player
 
             for (int i = 0; i < count; i++)
             {
-                Console.WriteLine($"Player is playing: {Songs[i].GetName()}, duration: {Songs[i].Duration}");
+                Console.WriteLine($"Player is playing: {Songs[i].GetName()}, duration: {Songs[i].Duration}, Genre: {Songs[i].Artist.Genre}");
                 System.Threading.Thread.Sleep(1000);
             }
         }
@@ -117,6 +116,11 @@ namespace Player
         public void Add(List<Song> songsArray)
         {
             Songs.AddRange(songsArray);
+        }
+
+        public void SetSongs(List<Song> songsArray)
+        {
+            Songs = songsArray;
         }
 
         public void Shuffle()
