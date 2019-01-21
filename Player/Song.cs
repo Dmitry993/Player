@@ -42,7 +42,6 @@ namespace Player
             {
                 Console.ForegroundColor = ConsoleColor.Green;
                 return _name;
-
             }
 
             if (_like == false)

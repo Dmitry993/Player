@@ -13,6 +13,18 @@ namespace Player
         private bool _locked;
         private bool _playing;
 
+        public AudioPlayer()
+        {
+
+        }
+
+        public AudioPlayer(Skin skin)
+        {
+            _skin = skin;
+        }
+
+        private Skin _skin { get; }
+
         public int Volume
         {
             get { return _volume; }
@@ -43,7 +55,7 @@ namespace Player
             }
 
             Volume++;
-            Console.WriteLine("Sound up");
+            //Console.WriteLine("Sound up");
         }
 
         public void VolumeDown()
@@ -54,7 +66,7 @@ namespace Player
             }
 
             Volume--;
-            Console.WriteLine("Sound down");
+            //Console.WriteLine("Sound down");
         }
 
         public void VolumeChange(int step)
@@ -65,7 +77,7 @@ namespace Player
             }
 
             Volume += step;
-            Console.WriteLine($"sound changed to {_volume}");
+            //Console.WriteLine($"sound changed to {_volume}");
         }
 
         public void Play(bool loop = false)
@@ -85,7 +97,9 @@ namespace Player
 
             for (int i = 0; i < count; i++)
             {
-                Console.WriteLine($"Player is playing: {Songs[i].GetName()}, duration: {Songs[i].Duration}, Genre: {Songs[i].Artist.Genre}");
+                _skin.Clear();
+                _skin.Render($"Player is playing: {Songs[i].GetName()}, duration: {Songs[i].Duration}, Genre: {Songs[i].Artist.Genre}");
+                //Console.WriteLine($"Player is playing: {Songs[i].GetName()}, duration: {Songs[i].Duration}, Genre: {Songs[i].Artist.Genre}");
                 System.Threading.Thread.Sleep(1000);
             }
         }
@@ -98,19 +112,19 @@ namespace Player
             }
 
             _playing = false;
-            Console.WriteLine("Player is stopped");
+            //Console.WriteLine("Player is stopped");
         }
 
         public void Lock()
         {
             _locked = true;
-            Console.WriteLine("Player locked");
+            //Console.WriteLine("Player locked");
         }
 
         public void Unlock()
         {
             _locked = false;
-            Console.WriteLine("Player unlocked");
+            //Console.WriteLine("Player unlocked");
         }
 
         public void Add(List<Song> songsArray)

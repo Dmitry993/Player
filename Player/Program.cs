@@ -9,7 +9,7 @@ namespace Player
     {
         static void Main(string[] args)
         {
-            var audioPlayer = new AudioPlayer();
+            var audioPlayer = new AudioPlayer(new ColorSkin1(ConsoleColor.DarkMagenta));
             int totalDuration = 0;
             int minDuration, maxDuration;
             //Console.WriteLine($"Total {totalDuration}, min {minDuration}, max {maxDuration}");
@@ -17,7 +17,7 @@ namespace Player
             //audioPlayer.Lock();
             //audioPlayer.Play();
             audioPlayer.VolumeUp();
-            Console.WriteLine(audioPlayer.Volume);
+            //Console.WriteLine(audioPlayer.Volume);
 
             audioPlayer.VolumeChange(-300);
             audioPlayer.VolumeChange(300);
@@ -42,12 +42,12 @@ namespace Player
             audioPlayer.Shuffle();
             audioPlayer.SortByTitle();
             audioPlayer.Substring();
-            audioPlayer.SetSongs(FilterByGenre(songs, Genres.Rock));
+            //audioPlayer.SetSongs(FilterByGenre(songs, Genres.Rock));
             
 
             for (int i = 0; i < audioPlayer.Songs.Count; i++)
             {
-                Console.WriteLine(audioPlayer.Songs[i].GetName());
+                //Console.WriteLine(audioPlayer.Songs[i].GetName());
             }
 
             audioPlayer.Play(true);
@@ -87,8 +87,7 @@ namespace Player
             album.Year = 1970;
 
             var artist = new Artist("Unknown", Genres.Default);
-            Console.WriteLine(artist.Genre);
-
+            
             var songs = new List<Song>(10);
             var random = new Random();
             for (int i = 0; i < 10; i++)
