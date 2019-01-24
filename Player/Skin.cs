@@ -6,26 +6,26 @@ using System.Threading.Tasks;
 
 namespace Player
 {
-    public abstract class Skin
+    public interface ISkin
     {
-        public abstract void Clear();
-        public abstract void Render(string text);
+        void Clear();
+        void Render(string text);
     }
 
-    public class ClassicSkin : Skin
+    public class ClassicSkin : ISkin
     {
-        public override void Clear()
+        public void Clear()
         {
             Console.Clear();
         }
 
-        public override void Render(string text)
+        public void Render(string text)
         {
             Console.WriteLine(text);
         }
     }
 
-    public class ColorSkin1 : Skin
+    public class ColorSkin1 : ISkin
     {
         public ColorSkin1(ConsoleColor color)
         {
@@ -34,12 +34,12 @@ namespace Player
 
         private ConsoleColor _color { get; }
 
-        public override void Clear()
+        public void Clear()
         {
             Console.Clear();
         }
 
-        public override void Render(string text)
+        public void Render(string text)
         {
             Console.ForegroundColor = _color;
             Console.WriteLine(text);
@@ -47,7 +47,7 @@ namespace Player
         }
     }
 
-    public class ColorSkin2 : Skin
+    public class ColorSkin2 : ISkin
     {
         Random random = new Random();
 
@@ -57,7 +57,7 @@ namespace Player
             return (ConsoleColor)consoleColors.GetValue(random.Next(consoleColors.Length));
         }
 
-        public override void Clear()
+        public void Clear()
         {
             Console.Clear();
             for (int i = 0; i < 30; i++)
@@ -67,7 +67,7 @@ namespace Player
             }
         }
 
-        public override void Render(string text)
+        public void Render(string text)
         {
             Console.ForegroundColor = GetRandomConsoleColor();
             Console.WriteLine(text);

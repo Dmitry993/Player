@@ -18,12 +18,12 @@ namespace Player
 
         }
 
-        public AudioPlayer(Skin skin)
+        public AudioPlayer(ISkin skin)
         {
             _skin = skin;
         }
 
-        private Skin _skin { get; }
+        private ISkin _skin { get; }
 
         public int Volume
         {
