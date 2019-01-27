@@ -4,64 +4,62 @@ namespace Player
 {
     public class Song : IComparable
     {
-        private string _name;
-        private bool? _like;
-
         public Song()
         {
-            _name = "Default name";
+            Name = "Default name";
         }
 
         public Song(string name, int duration)
         {
-            _name = name;
+            Name = name;
             Duration = duration;
         }
 
         public Song(string name, int duration, Artist artist, Album album)
         {
-            _name = name;
+            Name = name;
             Duration = duration;
             Artist = artist;
             Album = album;
         }
 
-        public string SetName { set { _name = value; } }
-        public int Duration { get; }
-        public Artist Artist { get; }
-        public Album Album { get; }
+        public string Name { get; set; }
+        public int Duration { get; set; }
+        public bool? Like { get; set; }
+        public Artist Artist { get; set; }
+        public Album Album { get; set; }
 
         public void Dislike()
         {
-            _like = false;
+            Like = false;
         }
 
         public string GetName()
         {
-            if (_like == true)
+            if (Like == true)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
-                return _name;
+                return Name;
             }
 
-            if (_like == false)
+            if (Like == false)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                return _name;
+                return Name;
             }
 
             Console.ResetColor();
-            return _name;
+            return Name;
         }
 
-        public void Like()
+        public void Likes()
         {
-            _like = true;
+            Like = true;
         }
 
         public int CompareTo(object obj)
         {
-            return this._name?.CompareTo((obj as Song)?._name) ?? 0;
+            return this.Name?.CompareTo((obj as Song)?.Name) ?? 0;
         }
     }
 }

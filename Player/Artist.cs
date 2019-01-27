@@ -2,22 +2,22 @@
 {
     public class Artist
     {
-        public string Name { get; }
-        public Genres Genre { get; }
+        public string Name;
+        public string Genre;
 
         public Artist()
         {
             Name = "Default artist";
-            Genre = Genres.Default;
+            Genre = "Default genre";
         }
 
         public Artist(string name)
         {
             Name = name;
-            Genre = Genres.Default;
+            Genre = "Default genre";
         }
 
-        public Artist(string name, Genres genre)
+        public Artist(string name, string genre)
         {
             Name = name;
             Genre = genre;

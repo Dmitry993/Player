@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml.Serialization;
 using Player.Extensions;
 
 namespace Player
@@ -99,7 +101,6 @@ namespace Player
             {
                 _skin.Clear();
                 _skin.Render($"Player is playing: {Songs[i].GetName()}, duration: {Songs[i].Duration}, Genre: {Songs[i].Artist.Genre}");
-                //Console.WriteLine($"Player is playing: {Songs[i].GetName()}, duration: {Songs[i].Duration}, Genre: {Songs[i].Artist.Genre}");
                 System.Threading.Thread.Sleep(1000);
             }
         }
@@ -150,6 +151,25 @@ namespace Player
         public void Substring()
         {
             Songs.Substring();
+        }
+
+        public void SaveAsPlaylist(Song[] arr, string fileName)
+        {
+            using (var stream = new FileStream(fileName, FileMode.OpenOrCreate))
+            {
+                var Xml = new XmlSerializer(arr.GetType());
+                Xml.Serialize(stream, arr);
+            }
+        }
+
+        public void LoadPlaylist(string fileName)
+        {
+            using (var stream = new FileStream(fileName, FileMode.OpenOrCreate))
+            {
+                var Xml = new XmlSerializer(typeof(Song []));
+                Song[] songs = (Song[]) Xml.Deserialize(stream);
+                Songs.AddRange(songs);
+            }
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Player.Extensions
             {
                 if (songs[i].GetName().Length > 10)
                 {
-                    songs[i].SetName = songs[i].GetName().Substring(0, 10) + "...";
+                    songs[i].Name = songs[i].GetName().Substring(0, 10) + "...";
                 }
             }
 
