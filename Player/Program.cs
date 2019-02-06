@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Player
 {
@@ -9,54 +7,46 @@ namespace Player
     {
         static void Main(string[] args)
         {
-            var audioPlayer = new AudioPlayer(new ColorSkin1(ConsoleColor.DarkMagenta));
+            using (var audioPlayer = new AudioPlayer())
+            {
+                audioPlayer.Load(@"D:/Music/");
 
-            //audioPlayer.Add(Load().ToList());
-            //audioPlayer.SetSongs(Clear());
-            //audioPlayer.SaveAsPlaylist(Load(), "playlist.xml");
-            audioPlayer.LoadPlaylist("playlist.xml");
+                audioPlayer.SongStartedEvent += DrawInterface;
+                audioPlayer.VolumeChangedEvent += DrawInterface;
+                audioPlayer.PlayerLockToggled += DrawInterface;
+                audioPlayer.SongsListChangedEvent += DrawInterface;
 
-            audioPlayer.Shuffle();
-            audioPlayer.SortByTitle();
-            audioPlayer.Substring();
-            //audioPlayer.SetSongs(FilterByGenre(Load().ToList(), "Rock"));
+                audioPlayer.Shuffle();
+                audioPlayer.VolumeUp();
+                audioPlayer.Play();
 
-            audioPlayer.Play(true);
-
-            Console.ReadLine();
+               Console.ReadLine();
+            }
         }
 
-        public static Song[] Load()
+        private static void DrawInterface(List<Song> songs, Song playingSong, bool locked, int volume)
         {
-            var dirInfo = new DirectoryInfo("D:/Music/");
-            var files = dirInfo.GetFiles("*.mp3");
+            Console.Clear();
 
-            Song[] songs = new Song[files.Length];
-
-            for (var i = 0; i < songs.Length; i++)
+            foreach (var song in songs)
             {
-                TagLib.File file = TagLib.File.Create(files[i].FullName);
-                var song = new Song(file.Tag.Title,
-                    (int)file.Properties.Duration.TotalSeconds,
-                    new Artist(file.Tag.AlbumArtists.FirstOrDefault(), file.Tag.Genres.FirstOrDefault()),
-                    new Album(file.Tag.Album,(int)file.Tag.Year));
-
-                songs[i] = song;
+                if (playingSong == song)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine(song.Name);
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.WriteLine(song.Name);
+                }
             }
 
-            return songs;
-        }
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine($"Volume is: {volume}. Locked: {locked}");
+            Console.ResetColor();
 
-        public static List<Song> Clear()
-        {
-           return new List<Song>();
-        }
-        
-        public static List<Song> FilterByGenre(List<Song> songs, string genre)
-        {
-            var genreSongs = songs.Where(song => song.Artist.Genre.Contains(genre)).ToList();
-            return genreSongs;
-        }
 
+        }
     }
 }

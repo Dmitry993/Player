@@ -2,33 +2,22 @@
 
 namespace Player
 {
-    public class Song : PlayingItem, IComparable
+    public class PlayingItem : IComparable
     {
-        public Song()
+        public PlayingItem()
         {
             Name = "Default name";
         }
 
-        public Song(string name, int duration)
+        public PlayingItem(string name, int duration)
         {
             Name = name;
             Duration = duration;
-        }
-
-        public Song(string name, int duration, Artist artist, Album album)
-        {
-            Name = name;
-            Duration = duration;
-            Artist = artist;
-            Album = album;
         }
 
         public string Name { get; set; }
         public int Duration { get; set; }
         private bool? _isLike { get; set; }
-        public string Path { get; set; }
-        public Artist Artist { get; set; }
-        public Album Album { get; set; }
 
         public void Dislike()
         {
