@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Media;
 using System.Xml.Serialization;
 using Player.Extensions;
 
@@ -16,12 +15,18 @@ namespace Player
         private int _volume;
         private bool _locked;
         private bool _playing;
-        private bool _disposed = false;
 
         public AudioPlayer()
         {
-            SoundPlayer = new SoundPlayer();
+
         }
+
+        public AudioPlayer(ISkin skin)
+        {
+            _skin = skin;
+        }
+
+        private ISkin _skin { get; }
 
         public int Volume
         {
@@ -43,22 +48,17 @@ namespace Player
             }
         }
 
+        public List<Song> Songs { get; private set; } = new List<Song>();
         public Song PlayingSong { get; private set; }
 
-        private SoundPlayer SoundPlayer { get; set; }
-
-        private protected List<Song> Songs { get; set; } = new List<Song>();
         public event Action<List<Song>, Song, bool, int> SongsListChangedEvent;
         public event Action<List<Song>, Song, bool, int> SongStartedEvent;
-        public event Action<List<Song>, Song, bool, int> VolumeChangedEvent;
-        public event Action<List<Song>, Song, bool, int> PlayerLockToggled;
 
         public void VolumeUp()
         {
             if (_locked == false)
             {
                 Volume++;
-                VolumeChangedEvent?.Invoke(Songs, PlayingSong, false, Volume);
             }
         }
 
@@ -67,8 +67,6 @@ namespace Player
             if (_locked == false)
             {
                 Volume--;
-                VolumeChangedEvent?.Invoke(Songs, PlayingSong, false, Volume);
-
             }
         }
 
@@ -77,11 +75,10 @@ namespace Player
             if (_locked == false)
             {
                 Volume += step;
-                VolumeChangedEvent?.Invoke(Songs, PlayingSong, false, Volume);
             }
         }
 
-        public void Play()
+        public void Play(bool loop = false)
         {
             if (!_locked && Songs.Count > 0)
             {
@@ -102,8 +99,6 @@ namespace Player
                     }
                 }
             }
-
-            _playing = false;
         }
 
         public bool Stop()
@@ -111,7 +106,6 @@ namespace Player
             if (!_locked)
             {
                 _playing = false;
-                SoundPlayer.Stop();
             }
 
             return _playing;
@@ -120,46 +114,34 @@ namespace Player
         public void Lock()
         {
             _locked = true;
-            PlayerLockToggled?.Invoke(Songs, PlayingSong, _locked, _volume);
-
         }
 
         public void Unlock()
         {
             _locked = false;
-            PlayerLockToggled?.Invoke(Songs, PlayingSong, _locked, _volume);
-
         }
 
         public void Shuffle()
         {
             Songs.Shuffle();
-            SongsListChangedEvent?.Invoke(Songs, PlayingSong, _locked, _volume);
-
         }
 
         public void SortByTitle()
         {
             Songs.Sort();
-            SongsListChangedEvent?.Invoke(Songs, PlayingSong, _locked, _volume);
-
         }
 
         public void Substring()
         {
             Songs.Substring();
-            SongsListChangedEvent?.Invoke(Songs, PlayingSong, _locked, _volume);
-
         }
 
         public void Clear()
         {
             Songs.Clear();
-            SongsListChangedEvent?.Invoke(Songs, PlayingSong, _locked, _volume);
-
         }
 
-        public override void SaveAsPlaylist(Song[] arr, string fileName)
+        public void SaveAsPlaylist(Song[] arr, string fileName)
         {
             using (var stream = new FileStream(fileName, FileMode.OpenOrCreate))
             {
@@ -168,16 +150,13 @@ namespace Player
             }
         }
 
-        public override void LoadPlaylist(string fileName)
+        public void LoadPlaylist(string fileName)
         {
             using (var stream = new FileStream(fileName, FileMode.OpenOrCreate))
             {
                 var Xml = new XmlSerializer(typeof(Song[]));
                 Song[] songs = (Song[])Xml.Deserialize(stream);
                 Songs.AddRange(songs);
-
-                SongsListChangedEvent?.Invoke(Songs, PlayingSong, _locked, _volume);
-
             }
         }
 
@@ -185,9 +164,6 @@ namespace Player
         {
             var genreSongs = Songs.Where(song => song.Artist.Genre.Contains(genre)).ToList();
             Songs = genreSongs;
-
-            SongsListChangedEvent?.Invoke(Songs, PlayingSong, _locked, _volume);
-
         }
 
         public override void Load(string path)
@@ -213,24 +189,7 @@ namespace Player
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            throw new NotImplementedException();
         }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                if (disposing)
-                {
-                    PlayingSong = null;
-                    SoundPlayer = null;
-                }
-
-                _disposed = true;
-            }
-        }
-
-        ~AudioPlayer() { Dispose(false); }
     }
 }
